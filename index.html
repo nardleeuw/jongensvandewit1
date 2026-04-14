@@ -1,0 +1,2565 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jongens van De Wit — Bossche Stadsbrouwerij</title>
+<meta name="description" content="Jongens van De Wit is de Bossche Stadsbrouwerij in 's-Hertogenbosch. Ambachtelijk gebrouwen bier met lokale ingrediënten. Proeverijen, rondleidingen en stadscafé.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --primary:                  #7b5800;
+  --primary-container:        #f9b600;
+  --ochre:                    #F9B600;
+  --earth:                    #5C4A34;
+  --surface:                  #fbf9f8;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low:    #f3f1f0;
+  --surface-container:        #efeded;
+  --on-surface:               #1b1c1c;
+  --on-surface-variant:       #504532;
+  --outline-variant:          rgba(80, 69, 50, 0.15);
+  --shadow-ambient:           0px 20px 40px rgba(80, 69, 50, 0.08);
+  --shadow-float:             0px 24px 48px rgba(80, 69, 50, 0.16);
+  --radius:                   0.5rem;
+  --radius-lg:                1rem;
+  --radius-xl:                1.5rem;
+  --font:                     'Plus Jakarta Sans', sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--on-surface);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; display: block; }
+a   { text-decoration: none; color: inherit; }
+ul  { list-style: none; }
+
+/* ============================================================
+   GRAIN TEXTURE OVERLAY
+   ============================================================ */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ============================================================
+   FLOATING NAV
+   ============================================================ */
+.nav {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 3rem);
+  max-width: 1320px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.5rem;
+  background: transparent;
+  border-radius: var(--radius-xl);
+  z-index: 500;
+  transition: background 0.35s ease, backdrop-filter 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Once scrolled past the hero, show glassmorphism so nav is readable */
+.nav.scrolled {
+  background: rgba(251, 249, 248, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 0 0 1px rgba(80, 69, 50, 0.07), var(--shadow-ambient);
+}
+
+.nav-logo {
+  height: 3.25rem;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  /* multiply removes the white logo bg against the light foam area */
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 1px 3px rgba(80, 69, 50, 0.15));
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.nav-links a {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--ochre); }
+
+.nav.scrolled .nav-links a {
+  color: var(--on-surface);
+}
+
+.nav.scrolled .nav-links a:hover { color: var(--primary); }
+
+.nav-links .nav-cta {
+  background: linear-gradient(to right, var(--primary), var(--primary-container));
+  color: #fff !important;
+  padding: 0.5rem 1.375rem;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 16px rgba(123, 88, 0, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-links .nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(123, 88, 0, 0.5);
+  color: #fff !important;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 501;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--on-surface);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ============================================================
+   HERO — SPLIT SCREEN
+   ============================================================ */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+/* Prevent grid cells from expanding past their track — ensures true 50/50 */
+.hero-left,
+.hero-right {
+  min-width: 0;
+}
+
+/* ---- Left panel: full-bleed beer photo ---- */
+.hero-left {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Foam at top so logo sits on the white schuim */
+  object-position: center 15%;
+  /* Static — no zoom, no parallax */
+}
+
+/* Gradient vignette on right edge of left panel — blends into dark right */
+.hero-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 40%, rgba(27, 28, 28, 0.75) 100%);
+  pointer-events: none;
+}
+
+/* Vertical scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  left: 2.25rem;
+  bottom: 3.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transform: rotate(-90deg);
+  transform-origin: left bottom;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.scroll-indicator::after {
+  content: '';
+  display: block;
+  width: 52px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---- Right panel: dark copy ---- */
+.hero-right {
+  background: var(--on-surface);
+  /* Left padding clears the glass (half glass width ≈ 9–11vw) */
+  padding: 8rem 3.5rem 4rem clamp(7rem, 12vw, 13rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle ochre radial glow */
+.hero-right::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(249, 182, 0, 0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-right::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(to top, rgba(249, 182, 0, 0.03), transparent);
+  pointer-events: none;
+}
+
+.hero-label {
+  display: inline-block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ochre);
+  margin-bottom: 0.875rem;
+}
+
+.hero-subtitle {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 0.625rem;
+}
+
+.hero-headline {
+  font-size: clamp(2.75rem, 4.5vw, 4.75rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin-bottom: 1.75rem;
+}
+
+.hero-body {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 30ch;
+  margin-bottom: 2.75rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9375rem 2.125rem;
+  background: linear-gradient(to right, var(--primary), var(--primary-container));
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: 100px;
+  align-self: flex-start;
+  box-shadow: 0 8px 28px rgba(123, 88, 0, 0.38);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(123, 88, 0, 0.48);
+}
+
+.btn-primary svg {
+  transition: transform 0.22s ease;
+}
+
+.btn-primary:hover svg {
+  transform: translateX(4px);
+}
+
+/* Social row — bottom-right of dark panel */
+.hero-socials {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero-socials-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  margin-right: 0.25rem;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 0.2s;
+}
+
+.social-icon:hover { color: var(--ochre); }
+
+/* ---- Product glass — the star of the show ---- */
+.hero-product {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 118%;
+  width: clamp(300px, 30vw, 500px);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.hero-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(-8px 32px 56px rgba(0, 0, 0, 0.55));
+}
+
+/* float animation removed — static glass per user request */
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible      { opacity: 1; transform: translateY(0); }
+.reveal-d1           { transition-delay: 0.1s; }
+.reveal-d2           { transition-delay: 0.2s; }
+.reveal-d3           { transition-delay: 0.3s; }
+.reveal-d4           { transition-delay: 0.4s; }
+
+/* ============================================================
+   SHARED LAYOUT
+   ============================================================ */
+.section-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ochre);
+  margin-bottom: 0.875rem;
+}
+
+/* ============================================================
+   BIEREN SECTIE
+   ============================================================ */
+.bieren-section {
+  background: var(--surface);
+  padding: 6.5rem 0 5.5rem;
+}
+
+.bieren-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: end;
+  margin-bottom: 3.75rem;
+}
+
+.bieren-title {
+  font-size: clamp(2rem, 3.2vw, 2.875rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.bieren-desc {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--on-surface-variant);
+  padding-bottom: 0.125rem;
+}
+
+/* Draggable horizontal scroll */
+.bieren-scroll-outer {
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  padding: 0.5rem 2rem 2.5rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.bieren-scroll-outer::-webkit-scrollbar { display: none; }
+.bieren-scroll-outer.dragging { cursor: grabbing; }
+
+.bieren-cards {
+  display: flex;
+  gap: 1.375rem;
+  width: max-content;
+}
+
+/* ---- Beer card ---- */
+.bier-card {
+  background: var(--surface-container-lowest);
+  border-radius: var(--radius-xl);
+  width: 268px;
+  padding: 2rem;
+  box-shadow: var(--shadow-ambient);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.32s ease, box-shadow 0.32s ease;
+}
+
+.bier-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(140deg, rgba(249,182,0,0.045) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.32s;
+  pointer-events: none;
+}
+
+.bier-card:hover {
+  transform: translateY(-7px);
+  box-shadow:
+    0px 28px 56px rgba(80, 69, 50, 0.13),
+    0 0 0 1px rgba(249, 182, 0, 0.09);
+}
+
+.bier-card:hover::after { opacity: 1; }
+
+.bier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary), var(--primary-container));
+  margin-bottom: 1.375rem;
+  flex-shrink: 0;
+}
+
+.bier-badge svg {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+}
+
+.bier-type {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ochre);
+  margin-bottom: 0.5rem;
+}
+
+.bier-name {
+  font-size: 1.3125rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.375rem;
+}
+
+.bier-abv {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--on-surface-variant);
+  margin-bottom: 1rem;
+}
+
+.bier-desc {
+  font-size: 0.8625rem;
+  line-height: 1.65;
+  color: var(--on-surface-variant);
+}
+
+/* ---- Beer card with illustrated photo ---- */
+.bier-card-img {
+  margin: -2rem -2rem 1.5rem;
+  height: 210px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.bier-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.5s ease;
+  display: block;
+}
+
+.bier-card:hover .bier-card-img img {
+  transform: scale(1.05);
+}
+
+/* Badge overlays bottom-right of the photo */
+.bier-card-img .bier-badge {
+  position: absolute;
+  bottom: 0.875rem;
+  right: 0.875rem;
+  margin: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+}
+
+.bier-card-foot {
+  margin: 1.5rem -2rem -2rem;
+  padding: 1.125rem 2rem;
+  background: rgba(80, 69, 50, 0.035);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+.bier-card-foot span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.04em;
+}
+
+.bier-card-foot svg {
+  color: var(--primary);
+  transition: transform 0.2s;
+}
+
+.bier-card:hover .bier-card-foot svg {
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   BROUWERIJ SECTIE
+   ============================================================ */
+.brouwerij-section {
+  background: var(--surface-container-low);
+  padding: 7rem 0;
+  overflow: hidden;
+}
+
+.brouwerij-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 54fr 46fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.brouwerij-img-wrap {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  /* Intentional bleed to the left */
+  margin-left: -2rem;
+  box-shadow: var(--shadow-float);
+}
+
+.brouwerij-img-wrap img {
+  width: 100%;
+  height: 540px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Ochre accent bar */
+.brouwerij-bar {
+  position: absolute;
+  bottom: 2.25rem;
+  left: 0;
+  width: 5px;
+  height: 72px;
+  background: linear-gradient(to bottom, var(--ochre), var(--primary));
+  border-radius: 0 3px 3px 0;
+}
+
+/* Opening year badge overlay */
+.brouwerij-badge {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: rgba(27, 28, 28, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.375rem;
+  text-align: center;
+}
+
+.brouwerij-badge-year {
+  display: block;
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: var(--ochre);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.brouwerij-badge-label {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
+.brouwerij-text {
+  padding-right: 1rem;
+}
+
+.brouwerij-kop {
+  font-size: clamp(1.875rem, 2.8vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.625rem;
+}
+
+.brouwerij-body {
+  font-size: 1rem;
+  line-height: 1.78;
+  color: var(--on-surface-variant);
+  margin-bottom: 1.25rem;
+}
+
+.brouwerij-stats {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  /* Background shift instead of border */
+  background: rgba(80, 69, 50, 0.05);
+  margin: 3rem -1.5rem 0;
+  padding: 1.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.brouwerij-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-num {
+  display: block;
+  font-size: 2.125rem;
+  font-weight: 800;
+  color: var(--ochre);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+
+/* ============================================================
+   EVENTS SECTIE
+   ============================================================ */
+.events-section {
+  background: var(--surface);
+  padding: 6.5rem 0;
+}
+
+.events-header {
+  margin-bottom: 4rem;
+}
+
+.events-title {
+  font-size: clamp(2rem, 3.2vw, 2.875rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  max-width: 20ch;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.event-card {
+  background: var(--surface-container-low);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-float);
+}
+
+/* Photo header — bleeds to card edges via negative margin */
+.event-card-img {
+  position: relative;
+  margin: -2.5rem -2.5rem 2rem;
+  height: 200px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+}
+
+.event-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.event-card:hover .event-card-img img {
+  transform: scale(1.04);
+}
+
+/* Gradient fades the photo into the card background colour */
+.event-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(243, 241, 240, 0.6) 75%,
+    #f3f1f0 100%
+  );
+  pointer-events: none;
+}
+
+.event-icon-wrap {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(249,182,0,0.14), rgba(123,88,0,0.07));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.625rem;
+}
+
+.event-icon-wrap svg {
+  width: 26px;
+  height: 26px;
+  color: var(--primary);
+}
+
+.event-title {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.75rem;
+}
+
+.event-desc {
+  font-size: 0.9375rem;
+  line-height: 1.72;
+  color: var(--on-surface-variant);
+  margin-bottom: 2rem;
+}
+
+.event-pricing {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.price-amount {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--on-surface);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.price-detail {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+  line-height: 1.4;
+}
+
+.btn-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--primary);
+  transition: gap 0.2s;
+}
+
+.btn-tertiary:hover { gap: 0.625rem; }
+
+.btn-tertiary svg { transition: transform 0.2s; }
+.btn-tertiary:hover svg { transform: translateX(3px); }
+
+/* ============================================================
+   OPENINGSTIJDEN BAND
+   ============================================================ */
+.openings-band {
+  background: linear-gradient(to right, var(--primary), var(--primary-container));
+  padding: 1.1875rem 2rem;
+  overflow: hidden;
+}
+
+.openings-band-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.openings-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.openings-item svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.75;
+}
+
+.openings-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--on-surface);
+  padding: 5.5rem 0 0;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1.3fr 1fr;
+  gap: 3rem;
+  padding-bottom: 4rem;
+}
+
+.footer-logo {
+  height: 2.25rem;
+  width: auto;
+  margin-bottom: 1.375rem;
+  filter: brightness(0) invert(1);
+  opacity: 0.88;
+}
+
+.footer-tagline {
+  font-size: 0.9rem;
+  line-height: 1.72;
+  color: rgba(255,255,255,0.38);
+  max-width: 24ch;
+}
+
+.footer-col-head {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 1.375rem;
+}
+
+.footer-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-nav-links a,
+.footer-contact-block a,
+.footer-contact-block p {
+  font-size: 0.9375rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+  transition: color 0.2s;
+}
+
+.footer-nav-links a:hover,
+.footer-contact-block a:hover { color: var(--ochre); }
+
+.footer-contact-block p { margin-bottom: 0.25rem; }
+
+.footer-contact-block .gap-block { height: 1rem; display: block; }
+
+.footer-socials {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.footer-soc-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.45);
+  transition: background 0.2s, color 0.2s;
+}
+
+.footer-soc-btn:hover {
+  background: rgba(249, 182, 0, 0.14);
+  color: var(--ochre);
+}
+
+.footer-bottom {
+  background: rgba(255,255,255,0.04);
+  margin: 0 -2rem;
+  /* wait — we need to handle this relative to the section-wrap */
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.footer-bottom p {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.22);
+}
+
+/* ============================================================
+   LOCATIE SECTIE — LocationMap port
+   ============================================================ */
+.locatie-section {
+  background: var(--on-surface);
+  padding: 6rem 0;
+  overflow: hidden;
+}
+
+.locatie-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* Left: info column */
+.locatie-info {
+  color: #fff;
+}
+
+.locatie-info .eyebrow {
+  color: var(--ochre);
+}
+
+.locatie-kop {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.locatie-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.375rem;
+}
+
+.locatie-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.locatie-item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: rgba(249,182,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.locatie-item-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ochre);
+}
+
+.locatie-item-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.3rem;
+}
+
+.locatie-item-value {
+  font-size: 0.9375rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+}
+
+.locatie-item-value a {
+  color: rgba(255,255,255,0.75);
+  transition: color 0.2s;
+}
+
+.locatie-item-value a:hover {
+  color: var(--ochre);
+}
+
+/* Right: interactive map card */
+.locatie-map-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.map-card {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: #242424;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 32px 64px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(249,182,0,0.05);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  user-select: none;
+}
+
+.map-card:hover {
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(249,182,0,0.12);
+}
+
+/* SVG map grid */
+.map-grid {
+  width: 100%;
+  height: 240px;
+  display: block;
+  background: #1a1a1a;
+  transition: height 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.map-card.expanded .map-grid {
+  height: 320px;
+}
+
+/* Streets: clearly visible in default state, brighten on expand */
+.map-street {
+  stroke: rgba(255,255,255,0.25);
+  stroke-width: 3;
+  fill: none;
+  transition: stroke 0.5s ease;
+}
+
+.map-street-minor {
+  stroke: rgba(255,255,255,0.1);
+  stroke-width: 1.5;
+  fill: none;
+  transition: stroke 0.5s ease 0.1s;
+}
+
+.map-card.expanded .map-street {
+  stroke: rgba(255,255,255,0.45);
+}
+
+.map-card.expanded .map-street-minor {
+  stroke: rgba(255,255,255,0.2);
+}
+
+/* Ochre highlight road — always visible as a landmark cue */
+.map-road-highlight {
+  stroke: rgba(249, 182, 0, 0.45);
+  stroke-width: 2.5;
+  fill: none;
+}
+
+.map-card.expanded .map-road-highlight {
+  stroke: rgba(249, 182, 0, 0.75);
+}
+
+/* Buildings: faint in default, bright on expand */
+.map-building {
+  fill: rgba(255,255,255,0.12);
+  opacity: 0.4;
+  transform: scale(0.9);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), fill 0.35s ease;
+}
+
+.map-card.expanded .map-building {
+  fill: rgba(255,255,255,0.22);
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Staggered building reveals */
+.map-card.expanded .map-building:nth-child(1) { transition-delay: 0.15s; }
+.map-card.expanded .map-building:nth-child(2) { transition-delay: 0.25s; }
+.map-card.expanded .map-building:nth-child(3) { transition-delay: 0.32s; }
+.map-card.expanded .map-building:nth-child(4) { transition-delay: 0.40s; }
+.map-card.expanded .map-building:nth-child(5) { transition-delay: 0.48s; }
+
+/* Pin inner group: transform-box: fill-box so scale uses element center-bottom */
+.map-pin {
+  transform: scale(0);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  transition: opacity 0.25s ease 0.3s, transform 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.3s;
+}
+
+.map-card.expanded .map-pin {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Card bottom info bar */
+.map-info-bar {
+  padding: 1.125rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #242424;
+}
+
+.map-location-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.88);
+  letter-spacing: -0.01em;
+}
+
+.map-coords {
+  font-size: 0.6875rem;
+  font-family: monospace;
+  color: rgba(255,255,255,0.35);
+  margin-top: 0.2rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.map-card.expanded .map-coords {
+  max-height: 2rem;
+  opacity: 1;
+}
+
+.map-live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.625rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 100px;
+}
+
+.map-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34D399;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+.map-live-text {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.map-click-hint {
+  text-align: center;
+  font-size: 0.6875rem;
+  color: rgba(255,255,255,0.2);
+  padding: 0.5rem 0 0.75rem;
+  transition: color 0.2s;
+}
+
+.map-card:hover .map-click-hint {
+  color: rgba(255,255,255,0.4);
+}
+
+.map-card.expanded .map-click-hint {
+  color: rgba(255,255,255,0.2);
+}
+
+/* Underline accent */
+.map-underline {
+  height: 2px;
+  background: linear-gradient(to right, #34D399, transparent);
+  transform: scaleX(0.25);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.map-card:hover .map-underline,
+.map-card.expanded .map-underline {
+  transform: scaleX(1);
+}
+
+@media (max-width: 768px) {
+  .locatie-inner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+/* ============================================================
+   PHOTO GALLERY SECTION
+   ============================================================ */
+.gallery-section {
+  position: relative;
+  background: var(--surface);
+  padding: 6rem 1.5rem 5rem;
+  overflow: hidden;
+}
+
+.gallery-grid-bg {
+  position: absolute;
+  inset: 0;
+  top: 160px;
+  height: 320px;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, #57534e 1px, transparent 1px),
+    linear-gradient(to bottom, #57534e 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  opacity: 0.13;
+  -webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 110%);
+  mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 110%);
+}
+
+.gallery-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.gallery-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  margin-bottom: 0.75rem;
+}
+
+.gallery-heading {
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--on-surface);
+  margin-bottom: 4rem;
+}
+
+.gallery-heading .gallery-accent {
+  color: var(--primary-container);
+}
+
+/* Stage: wide container that allows the spread photos to overflow */
+.gallery-stage {
+  position: relative;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+/* 220×220 anchor in the center — photos are positioned absolute from here */
+.gallery-photos {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.gallery-photo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 1.75rem;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  /* Start stacked; JS adds .spread class to trigger transition */
+  transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+  transition:
+    transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+  box-shadow: 0 8px 32px rgba(80, 69, 50, 0.22);
+  will-change: transform;
+}
+
+.gallery-photo:active {
+  cursor: grabbing;
+}
+
+.gallery-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.75rem;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+}
+
+/* Spread state — set via JS after load */
+.gallery-photo.spread {
+  transform:
+    translateX(var(--tx, 0px))
+    translateY(var(--ty, 0px))
+    rotate(var(--rot, 0deg))
+    scale(1);
+}
+
+/* Hover: lift + extra tilt */
+.gallery-photo.spread:hover {
+  transform:
+    translateX(var(--tx, 0px))
+    translateY(var(--ty, 0px))
+    rotate(var(--rot-hover, 0deg))
+    scale(1.08);
+  box-shadow: 0 20px 48px rgba(80, 69, 50, 0.35);
+  z-index: 9999 !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Dragging state */
+.gallery-photo.dragging {
+  cursor: grabbing;
+  z-index: 9999 !important;
+  transition: box-shadow 0.2s ease; /* no transform transition while dragging */
+  box-shadow: 0 28px 56px rgba(80, 69, 50, 0.42);
+}
+
+/* CTA under gallery */
+.gallery-cta {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .gallery-stage {
+    height: 280px;
+  }
+  .gallery-photos,
+  .gallery-photo {
+    width: 160px;
+    height: 160px;
+  }
+  .gallery-photo.spread {
+    transform:
+      translateX(calc(var(--tx, 0px) * 0.5))
+      translateY(calc(var(--ty, 0px) * 0.6))
+      rotate(var(--rot, 0deg))
+      scale(1);
+  }
+  .gallery-photo.spread:hover {
+    transform:
+      translateX(calc(var(--tx, 0px) * 0.5))
+      translateY(calc(var(--ty, 0px) * 0.6))
+      rotate(var(--rot-hover, 0deg))
+      scale(1.08);
+  }
+}
+
+/* ============================================================
+   WHATSAPP FLOATING BUTTON
+   ============================================================ */
+.wa-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.38);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.wa-btn:hover {
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 10px 32px rgba(37, 211, 102, 0.5);
+}
+
+.wa-btn svg { color: #fff; }
+
+/* ============================================================
+   RESPONSIVE — TABLET
+   ============================================================ */
+@media (max-width: 1080px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem 3rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* Nav */
+  .nav {
+    top: 0.875rem;
+    width: calc(100% - 2rem);
+    padding: 0.75rem 1.25rem;
+  }
+
+  .nav-links {
+    position: fixed;
+    inset: 0;
+    background: var(--surface);
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    z-index: 499;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .nav-links.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .nav-links a {
+    font-size: 1.125rem;
+    letter-spacing: 0.04em;
+  }
+
+  .nav-toggle { display: flex; }
+
+  /* Hero */
+  .hero {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .hero-left {
+    height: 46vh;
+  }
+
+  .hero-right {
+    padding: 5.5rem 1.5rem 7rem;
+    min-height: 54vh;
+  }
+
+  .hero-product {
+    width: clamp(120px, 32vw, 180px);
+    height: auto;
+    bottom: auto;
+    top: 32vh;
+    left: 50%;
+    transform: translateX(-50%);
+    aspect-ratio: 1 / 1.9;
+  }
+
+  .hero-socials {
+    bottom: 2.25rem;
+    right: 1.5rem;
+  }
+
+  .scroll-indicator { display: none; }
+
+  /* Bieren */
+  .bieren-header {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .bieren-scroll-outer { padding: 0.5rem 1.25rem 2rem; }
+
+  /* Brouwerij */
+  .brouwerij-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .brouwerij-img-wrap { margin-left: 0; }
+  .brouwerij-img-wrap img { height: 300px; }
+  .brouwerij-text { padding-right: 0; }
+  .brouwerij-stats { gap: 1.5rem; }
+
+  /* Events */
+  .events-grid { grid-template-columns: 1fr; }
+
+  /* Openings band */
+  .openings-band-inner { gap: 1rem; }
+  .openings-dot { display: none; }
+
+  /* Footer */
+  .footer-top { grid-template-columns: 1fr; gap: 2.25rem; }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .wa-btn {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-wrap { padding: 0 1.25rem; }
+  .hero-right { padding: 5rem 1.25rem 6.5rem; }
+  .hero-headline { font-size: clamp(2.25rem, 11vw, 3rem); }
+}
+</style>
+</head>
+<body>
+
+<!-- Grain texture -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============================================================
+     FLOATING NAV
+     ============================================================ -->
+<nav class="nav" id="main-nav" role="navigation" aria-label="Hoofdnavigatie">
+  <a href="/" aria-label="Jongens van De Wit — home">
+    <img src="./beterlogo2.png" alt="Jongens van De Wit Bossche Stadsbrouwerij" class="nav-logo">
+  </a>
+
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu openen" aria-expanded="false" aria-controls="nav-links">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <ul class="nav-links" id="nav-links" role="list">
+    <li><a href="#bieren">Bieren</a></li>
+    <li><a href="#brouwerij">Brouwerij</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#contact" class="nav-cta">Reserveer</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================================
+     HERO — SPLIT SCREEN
+     ============================================================ -->
+<section class="hero" aria-label="Hero">
+
+  <!-- 60% left: full-bleed beer close-up -->
+  <div class="hero-left" id="hero-left">
+    <img
+      src="./scherpbier.jpg"
+      alt="Ambachtelijk gebrouwen bier bij Jongens van De Wit"
+      class="hero-left-img"
+      loading="eager">
+    <div class="scroll-indicator" aria-hidden="true">Scroll down</div>
+  </div>
+
+  <!-- 40% right: dark copy panel -->
+  <div class="hero-right">
+    <span class="hero-label">Bossche Stadsbrouwerij</span>
+    <p class="hero-subtitle">Ambacht staat voorop</p>
+    <h1 class="hero-headline reveal">
+      DIT IS<br>VAKMANSCHAP
+    </h1>
+    <p class="hero-body reveal reveal-d1">
+      Wij brouwen onze bieren onder het oog van onze gasten —
+      met lokale ingrediënten, authenticiteit en een
+      onverzettelijke liefde voor het ambacht.
+      Gebrouwen in 's-Hertogenbosch.
+    </p>
+    <a href="#bieren" class="btn-primary reveal reveal-d2" aria-label="Bekijk onze bieren">
+      Ontdek de bieren
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <div class="hero-socials" aria-label="Volg ons">
+      <span class="hero-socials-label">Volg ons</span>
+      <a href="https://www.instagram.com/jongensvandewit/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="https://www.facebook.com/jongensvandewit" class="social-icon" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Product glass — overlaps the split -->
+  <div class="hero-product" aria-hidden="true">
+    <img
+      src="./bierg.png"
+      alt="Jongens van De Wit bierglas"
+      class="hero-product-img"
+      loading="eager">
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PHOTO GALLERY — spread foto's
+     ============================================================ -->
+<section id="gallery" class="gallery-section" aria-label="Foto galerij">
+  <div class="gallery-grid-bg" aria-hidden="true"></div>
+  <div class="gallery-inner">
+
+    <p class="gallery-eyebrow reveal">Een kijkje achter de tap</p>
+    <h2 class="gallery-heading reveal reveal-d1">
+      Gebrouwen met <span class="gallery-accent">passie</span>
+    </h2>
+
+    <div class="gallery-stage">
+      <div class="gallery-photos" id="gallery-photos">
+
+        <!--
+          Rendered in reverse z-order so higher z-index comes later in DOM.
+          data-tx / data-ty: spread target in px (as numbers, JS appends 'px')
+          data-rot-dir: -1 = left lean, 1 = right lean
+          data-order: animation delay index
+        -->
+
+        <!-- Photo 5 — back (z-index 10) -->
+        <div class="gallery-photo"
+             data-tx="320" data-ty="44" data-rot-dir="-1" data-order="4"
+             style="z-index:10; transition-delay:0.6s;">
+          <img src="./images/IMG_2519.jpeg" alt="Jongens van De Wit brouwerij sfeer" loading="lazy">
+        </div>
+
+        <!-- Photo 4 — z-index 20 -->
+        <div class="gallery-photo"
+             data-tx="160" data-ty="22" data-rot-dir="1" data-order="3"
+             style="z-index:20; transition-delay:0.45s;">
+          <img src="./images/IMG_2518.jpeg" alt="Bier proeverij workshop" loading="lazy">
+        </div>
+
+        <!-- Photo 3 — center (z-index 30) -->
+        <div class="gallery-photo"
+             data-tx="0" data-ty="8" data-rot-dir="1" data-order="2"
+             style="z-index:30; transition-delay:0.30s;">
+          <img src="./images/IMG_2517.jpeg" alt="Ambachtelijk brouwen" loading="lazy">
+        </div>
+
+        <!-- Photo 2 — z-index 40 -->
+        <div class="gallery-photo"
+             data-tx="-160" data-ty="32" data-rot-dir="-1" data-order="1"
+             style="z-index:40; transition-delay:0.15s;">
+          <img src="./images/IMG_2516.jpeg" alt="Bossche bier ingrediënten" loading="lazy">
+        </div>
+
+        <!-- Photo 1 — front (z-index 50) -->
+        <div class="gallery-photo"
+             data-tx="-320" data-ty="15" data-rot-dir="-1" data-order="0"
+             style="z-index:50; transition-delay:0s;">
+          <img src="./images/IMG_2515.jpeg" alt="Jongens van De Wit bierglas" loading="lazy">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="gallery-cta reveal reveal-d2">
+      <a href="https://www.instagram.com/jongensvandewitbrouwerij" target="_blank" rel="noopener" class="btn-primary">
+        Bekijk alle foto's
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     BIEREN SECTIE
+     ============================================================ -->
+<section id="bieren" class="bieren-section" aria-label="Onze bieren">
+  <div class="section-wrap">
+    <div class="bieren-header">
+      <div>
+        <span class="eyebrow reveal">Onze Bossche Bieren</span>
+        <h2 class="bieren-title reveal reveal-d1">
+          Gebrouwen met passie,<br>gedronken met plezier
+        </h2>
+      </div>
+      <p class="bieren-desc reveal reveal-d2">
+        Van lokale hop tot Bossch bronwater — wij gebruiken enkel regionale en
+        biologische ingrediënten. Niet omdat het hip is, maar omdat het onze
+        bieren zoveel lekkerder maakt.
+      </p>
+    </div>
+  </div>
+
+  <div class="bieren-scroll-outer" id="bieren-scroll" role="list" aria-label="Biercards — horizontaal scrollbaar">
+    <div class="bieren-cards">
+
+      <!-- Maagdelijk Blond -->
+      <article class="bier-card reveal" role="listitem">
+        <div class="bier-card-img">
+          <img src="./tekenfotosbieren/maagedelijkblond.jpg" alt="Maagdelijk Blond" loading="lazy">
+          <div class="bier-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14l-1.5 9A5 5 0 0112 17a5 5 0 01-5.5-5L5 3z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <p class="bier-type">Blond</p>
+        <h3 class="bier-name">Maagdelijk Blond</h3>
+        <p class="bier-abv">5,1 vol% &nbsp;·&nbsp; Licht goudkleurig</p>
+        <p class="bier-desc">
+          Fris en stevig blond met een witte schuimkraag. Meerdere hopsoorten,
+          zachte smaak — perfecte dorstlesser op een zonnige dag.
+        </p>
+        <div class="bier-card-foot">
+          <span>Ons eerste bier</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </article>
+
+      <!-- PIPA -->
+      <article class="bier-card reveal reveal-d1" role="listitem">
+        <div class="bier-card-img">
+          <img src="./tekenfotosbieren/pipa.jpg" alt="PIPA Paleiskwartier IPA" loading="lazy">
+          <div class="bier-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="6" stroke="currentColor" stroke-width="1.75"/><path d="M8.5 9c.5-2 2-3 3.5-3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M12 15v6M9 21h6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <p class="bier-type">India Pale Ale</p>
+        <h3 class="bier-name">PIPA</h3>
+        <p class="bier-abv">4,7 vol% &nbsp;·&nbsp; Ongefilterd</p>
+        <p class="bier-desc">
+          Frisse citrusnoten, grapefruit en citroengras. Geïnspireerd op de
+          eigentijdse architectuur van het Paleiskwartier.
+        </p>
+        <div class="bier-card-foot">
+          <span>Paleiskwartier IPA</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Gerrit de Struikrover -->
+      <article class="bier-card reveal reveal-d2" role="listitem">
+        <div class="bier-card-img">
+          <img src="./tekenfotosbieren/gerritdestruikrover.jpg" alt="Gerrit de Struikrover" loading="lazy">
+          <div class="bier-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8 2 5 5 5 8c0 4 4 8 7 12 3-4 7-8 7-12 0-3-3-6-7-6z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><circle cx="12" cy="8" r="2.5" stroke="currentColor" stroke-width="1.75"/></svg>
+          </div>
+        </div>
+        <p class="bier-type">Witbier</p>
+        <h3 class="bier-name">Gerrit de Struikrover</h3>
+        <p class="bier-abv">6,5 vol% &nbsp;·&nbsp; Donkerblond tarwebier</p>
+        <p class="bier-desc">
+          Ongepasteuriseerd tarwebier, vernoemd naar de beruchte
+          Bossche struikrover uit 1800. Vol karakter, rijk verhaal.
+        </p>
+        <div class="bier-card-foot">
+          <span>Bossche legende</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Tripel H4 -->
+      <article class="bier-card reveal reveal-d3" role="listitem">
+        <div class="bier-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 3H5l1 6a5 5 0 005 5 5 5 0 005-5l1-6h-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14v7M8 21h8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        </div>
+        <p class="bier-type">Tripel</p>
+        <h3 class="bier-name">Tripel H4</h3>
+        <p class="bier-abv">7,2 vol% &nbsp;·&nbsp; Amberkleurig</p>
+        <p class="bier-desc">
+          Vernoemd naar ons adres Hofvijver 4. Qua smaak tussen
+          La Chouffe en Tripel Karmeliet. Ongepasteuriseerd.
+        </p>
+        <div class="bier-card-foot">
+          <span>Hofvijver 4</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Boze Griet -->
+      <article class="bier-card reveal reveal-d4" role="listitem">
+        <div class="bier-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2c-1.5 3-4 4-4 7a4 4 0 008 0c0-3-2.5-4-4-7z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M12 13v9M9 22h6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        </div>
+        <p class="bier-type">Gerstewijn</p>
+        <h3 class="bier-name">Boze Griet</h3>
+        <p class="bier-abv">10,5 vol% &nbsp;·&nbsp; Zwaar bier</p>
+        <p class="bier-desc">
+          Intense gerstewijn met volmondig zoet en aangenaam bitter
+          in de nasmaak. Exclusief verkrijgbaar van de tap.
+        </p>
+        <div class="bier-card-foot">
+          <span>Alleen van de tap</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BROUWERIJ SECTIE — Asymmetrisch editorial
+     ============================================================ -->
+<section id="brouwerij" class="brouwerij-section" aria-label="Over de brouwerij">
+  <div class="brouwerij-inner">
+
+    <!-- Image left — bleeds to edge -->
+    <div class="brouwerij-img-wrap reveal">
+      <img
+        src="./Quiz-of-Workshop-bij-Jongens-van-de-Wit-Bossche-Stadsbrouwerij-in-s-Hertogenbosch.jpg"
+        alt="Brouwerij interieur van Jongens van De Wit in 's-Hertogenbosch"
+        loading="lazy">
+      <div class="brouwerij-bar" aria-hidden="true"></div>
+      <div class="brouwerij-badge" aria-hidden="true">
+        <span class="brouwerij-badge-year">2016</span>
+        <span class="brouwerij-badge-label">Opgericht</span>
+      </div>
+    </div>
+
+    <!-- Text right -->
+    <div class="brouwerij-text">
+      <span class="eyebrow reveal">Het Verhaal</span>
+      <h2 class="brouwerij-kop reveal reveal-d1">
+        Gebrouwen onder<br>de ogen van<br>onze gasten
+      </h2>
+      <p class="brouwerij-body reveal reveal-d2">
+        In onze Bossche Stadsbrouwerij brouwen wij onze bieren terwijl
+        jij erbij zit. Daarvoor gebruiken we enkel lokale, regionale en
+        biologische ingrediënten — van het hop tot de gerst,
+        van het bronwater tot de tarwe.
+      </p>
+      <p class="brouwerij-body reveal reveal-d3">
+        Niet omdat het hip is, maar omdat het onze bieren zoveel lekkerder
+        maakt. Ons bier schenken we uit de tap en verkopen we in PET-flessen
+        — te genieten in ons stadscafé of thuis op de bank.
+      </p>
+
+      <div class="brouwerij-stats reveal reveal-d4">
+        <div class="brouwerij-stat">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Bossche bieren</span>
+        </div>
+        <div class="brouwerij-stat">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Lokale ingrediënten</span>
+        </div>
+        <div class="brouwerij-stat">
+          <span class="stat-num">∞</span>
+          <span class="stat-label">Liefde voor ambacht</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     EVENTS &amp; PROEVERIJEN
+     ============================================================ -->
+<section id="events" class="events-section" aria-label="Proeverijen en rondleidingen">
+  <div class="section-wrap">
+
+    <div class="events-header">
+      <span class="eyebrow reveal">Beleef de Brouwerij</span>
+      <h2 class="events-title reveal reveal-d1">
+        Proef, ruik en<br>ontdek het ambacht
+      </h2>
+    </div>
+
+    <div class="events-grid">
+
+      <!-- Bierproeverij -->
+      <article class="event-card reveal">
+        <div class="event-card-img">
+          <img src="./bierproeverij.jpg" alt="Bierproeverij bij Jongens van De Wit" loading="lazy">
+        </div>
+        <div class="event-icon-wrap" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 3h14l-1.5 9A5 5 0 0112 17a5 5 0 01-5.5-5L5 3z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+            <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="event-title">Bierproeverij</h3>
+        <p class="event-desc">
+          Proef onze Bossche ambachtsbieren getapt in het originele JvandeW glas.
+          Onze brouwers vertellen over het brouwproces, de ingrediënten en de
+          verhalen achter elk bier. Dagelijks mogelijk — reserveren gewenst.
+        </p>
+        <div class="event-pricing">
+          <div class="price-block">
+            <span class="price-amount">€ 9,–</span>
+            <span class="price-detail">3 bieren (12,5 cl.)</span>
+          </div>
+          <div class="price-block">
+            <span class="price-amount">€ 15,–</span>
+            <span class="price-detail">5 bieren (12,5 cl.)</span>
+          </div>
+        </div>
+        <a href="tel:0733020014" class="btn-tertiary">
+          Reserveer
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- Brouwerijrondleiding -->
+      <article class="event-card reveal reveal-d1">
+        <div class="event-card-img">
+          <img src="./rondleiding.jpg" alt="Brouwerijrondleiding bij Jongens van De Wit" loading="lazy">
+        </div>
+        <div class="event-icon-wrap" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.75"/>
+            <path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="event-title">Brouwerijrondleiding</h3>
+        <p class="event-desc">
+          Ga mee achter de schermen van onze Bossche Stadsbrouwerij.
+          Zie het brouwproces van dichtbij, ruik de hop en begrijp hoe
+          onze ambachtsbieren tot leven komen. Te combineren met proeverij.
+        </p>
+        <div class="event-pricing">
+          <div class="price-block">
+            <span class="price-amount">€ 5,–</span>
+            <span class="price-detail">per persoon<br>dagelijks mogelijk</span>
+          </div>
+        </div>
+        <a href="tel:0733020014" class="btn-tertiary">
+          Plan een rondleiding
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LOCATIE & INFO SECTIE
+     ============================================================ -->
+<section class="locatie-section" aria-label="Locatie en contactinfo" id="locatie">
+  <div class="locatie-inner">
+
+    <!-- Left: contact info -->
+    <div class="locatie-info">
+      <span class="eyebrow reveal">Bezoek ons</span>
+      <h2 class="locatie-kop reveal reveal-d1">
+        Midden in<br>het hart van<br>Den Bosch
+      </h2>
+
+      <div class="locatie-details">
+
+        <div class="locatie-item reveal reveal-d2">
+          <div class="locatie-item-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.75"/></svg>
+          </div>
+          <div>
+            <p class="locatie-item-label">Adres</p>
+            <p class="locatie-item-value">Hofvijver 4<br>5223 MC 's-Hertogenbosch</p>
+          </div>
+        </div>
+
+        <div class="locatie-item reveal reveal-d2">
+          <div class="locatie-item-icon">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.75"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <p class="locatie-item-label">Openingstijden</p>
+            <p class="locatie-item-value">
+              Di – Za &nbsp;11:00 – 23:00<br>
+              Zo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11:00 – 21:00<br>
+              <span style="color:rgba(255,255,255,0.4);font-size:0.8125rem;">Keuken 12:00 – 20:30</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="locatie-item reveal reveal-d3">
+          <div class="locatie-item-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <p class="locatie-item-label">Reserveren</p>
+            <p class="locatie-item-value">
+              <a href="tel:0733020014">073 – 30 200 14</a><br>
+              <a href="mailto:info@jvandew.nl">info@jvandew.nl</a>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right: interactive map card -->
+    <div class="locatie-map-wrap">
+      <div class="map-card" id="map-card" role="button" tabindex="0" aria-label="Klik om kaart uit te vouwen">
+
+        <!-- SVG map -->
+        <svg class="map-grid" viewBox="0 0 380 240" preserveAspectRatio="xMidYMid slice" id="map-svg">
+
+          <!-- Main roads -->
+          <line class="map-street" x1="0" y1="84"  x2="380" y2="84"/>
+          <line class="map-street" x1="0" y1="156" x2="380" y2="156"/>
+          <line class="map-street" x1="114" y1="0"  x2="114" y2="240"/>
+          <line class="map-street" x1="266" y1="0"  x2="266" y2="240"/>
+          <!-- Highlight road (ochre) — visually anchors the pin location -->
+          <line class="map-road-highlight" x1="114" y1="84" x2="266" y2="156"/>
+
+          <!-- Secondary streets -->
+          <line class="map-street-minor" x1="0"   y1="48"  x2="380" y2="48"/>
+          <line class="map-street-minor" x1="0"   y1="120" x2="380" y2="120"/>
+          <line class="map-street-minor" x1="0"   y1="192" x2="380" y2="192"/>
+          <line class="map-street-minor" x1="57"  y1="0"   x2="57"  y2="240"/>
+          <line class="map-street-minor" x1="171" y1="0"   x2="171" y2="240"/>
+          <line class="map-street-minor" x1="228" y1="0"   x2="228" y2="240"/>
+          <line class="map-street-minor" x1="323" y1="0"   x2="323" y2="240"/>
+
+          <!-- Buildings -->
+          <rect class="map-building" x="20"  y="56"  width="30" height="22" rx="3"/>
+          <rect class="map-building" x="130" y="10"  width="28" height="32" rx="3"/>
+          <rect class="map-building" x="285" y="168" width="35" height="28" rx="3"/>
+          <rect class="map-building" x="68"  y="164" width="22" height="18" rx="3"/>
+          <rect class="map-building" x="290" y="16"  width="26" height="20" rx="3"/>
+
+          <!-- Pin at Hofvijver 4 (roughly center) -->
+          <!-- Outer <g> positions pin at (190,120); inner <g class="map-pin"> scales around that origin -->
+          <g transform="translate(190, 120)">
+            <g class="map-pin">
+            <path d="M0 -22C-8 -22 -14 -16 -14 -8C-14 2 0 16 0 16C0 16 14 2 14 -8C14 -16 8 -22 0 -22Z"
+              fill="#34D399" filter="url(#pin-glow)"/>
+            <circle cx="0" cy="-8" r="5" fill="white"/>
+            </g>
+            <defs>
+              <filter id="pin-glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+          </g>
+
+          <!-- Gradient fade at bottom -->
+          <defs>
+            <linearGradient id="map-fade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="60%" stop-color="#1a1a1a" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#1a1a1a" stop-opacity="1"/>
+            </linearGradient>
+          </defs>
+          <rect width="380" height="240" fill="url(#map-fade)"/>
+        </svg>
+
+        <!-- Info bar -->
+        <div class="map-info-bar">
+          <div>
+            <p class="map-location-name">Hofvijver 4, 's-Hertogenbosch</p>
+            <p class="map-coords">51.6922° N, 5.2945° O</p>
+            <div class="map-underline"></div>
+          </div>
+          <div class="map-live-badge">
+            <div class="map-live-dot"></div>
+            <span class="map-live-text">Open</span>
+          </div>
+        </div>
+
+        <p class="map-click-hint">Klik om uit te vouwen</p>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     OPENINGSTIJDEN BAND
+     ============================================================ -->
+<div class="openings-band" role="complementary" aria-label="Openingstijden">
+  <div class="openings-band-inner">
+    <div class="openings-item">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Di – Za: 11:00 – 23:00
+    </div>
+    <div class="openings-dot" aria-hidden="true"></div>
+    <div class="openings-item">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Zo: 11:00 – 21:00
+    </div>
+    <div class="openings-dot" aria-hidden="true"></div>
+    <div class="openings-item">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 11l9-9 9 9v10a1 1 0 01-1 1H4a1 1 0 01-1-1v-10z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M9 22V12h6v10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Keuken 12:00 – 20:30
+    </div>
+    <div class="openings-dot" aria-hidden="true"></div>
+    <div class="openings-item">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      Hofvijver 4, Den Bosch
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer id="contact" aria-label="Footer">
+  <div class="section-wrap">
+    <div class="footer-top">
+
+      <!-- Brand -->
+      <div>
+        <img src="./beterlogo2.png" alt="Jongens van De Wit" class="footer-logo">
+        <p class="footer-tagline">
+          Gebrouwen in 's-Hertogenbosch.<br>
+          Ambacht, vakmanschap en liefde<br>
+          voor het bier — elke dag opnieuw.
+        </p>
+      </div>
+
+      <!-- Navigatie -->
+      <div>
+        <p class="footer-col-head">Navigatie</p>
+        <ul class="footer-nav-links">
+          <li><a href="#bieren">Onze Bieren</a></li>
+          <li><a href="#brouwerij">De Brouwerij</a></li>
+          <li><a href="#events">Proeverijen</a></li>
+          <li><a href="#events">Rondleidingen</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-contact-block">
+        <p class="footer-col-head">Contact &amp; Bezoek</p>
+        <p>Hofvijver 4</p>
+        <p>5223 MC 's-Hertogenbosch</p>
+        <span class="gap-block"></span>
+        <p><a href="tel:0733020014">073 – 30 200 14</a></p>
+        <p><a href="mailto:info@jvandew.nl">info@jvandew.nl</a></p>
+        <span class="gap-block"></span>
+        <p>Di t/m Za: 11:00 – 23:00</p>
+        <p>Zo: 11:00 – 21:00</p>
+      </div>
+
+      <!-- Socials -->
+      <div>
+        <p class="footer-col-head">Volg Ons</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/jongensvandewit/" class="footer-soc-btn" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor"/>
+            </svg>
+          </a>
+          <a href="https://www.facebook.com/jongensvandewit" class="footer-soc-btn" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <p class="footer-col-head" style="margin-top:2rem;">Reserveren</p>
+        <ul class="footer-nav-links">
+          <li><a href="tel:0733020014">073 – 30 200 14</a></li>
+          <li><a href="mailto:info@jvandew.nl">info@jvandew.nl</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2024 Jongens van De Wit — Bossche Stadsbrouwerij. Alle rechten voorbehouden.</p>
+      <p>Drink verantwoord. Niet geschikt voor personen onder de 18 jaar.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     WHATSAPP FLOATING BUTTON
+     ============================================================ -->
+<a
+  href="https://wa.me/31733020014"
+  class="wa-btn"
+  aria-label="Neem contact op via WhatsApp"
+  target="_blank"
+  rel="noopener noreferrer">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ---- Nav: scroll effect & hamburger ----
+const nav        = document.getElementById('main-nav');
+const navToggle  = document.getElementById('nav-toggle');
+const navLinks   = document.getElementById('nav-links');
+
+window.addEventListener('scroll', () => {
+  const heroH = document.querySelector('.hero')?.offsetHeight ?? window.innerHeight;
+  nav.classList.toggle('scrolled', window.scrollY > heroH * 0.85);
+}, { passive: true });
+
+navToggle.addEventListener('click', function () {
+  const open = navLinks.classList.toggle('open');
+  navToggle.classList.toggle('active', open);
+  navToggle.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    navToggle.classList.remove('active');
+    navToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+});
+
+// scherpbier static — no scale-in needed
+
+// scherpbier.jpg — static, no parallax
+
+// ---- Hero reveals: fire on load with stagger ----
+const heroReveals = document.querySelectorAll('.hero-right .reveal');
+heroReveals.forEach((el, i) => {
+  setTimeout(() => el.classList.add('visible'), 300 + i * 120);
+});
+
+// ---- IntersectionObserver — scroll reveals (below fold) ----
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => {
+  // skip hero reveals — handled above
+  if (!el.closest('.hero-right')) revealObs.observe(el);
+});
+
+// ---- Beer cards: drag-to-scroll ----
+const scrollEl = document.getElementById('bieren-scroll');
+if (scrollEl) {
+  let isDown = false, startX, scrollLeft;
+
+  scrollEl.addEventListener('mousedown', e => {
+    isDown = true;
+    scrollEl.classList.add('dragging');
+    startX     = e.pageX - scrollEl.offsetLeft;
+    scrollLeft = scrollEl.scrollLeft;
+  });
+
+  scrollEl.addEventListener('mouseleave',  () => { isDown = false; scrollEl.classList.remove('dragging'); });
+  scrollEl.addEventListener('mouseup',     () => { isDown = false; scrollEl.classList.remove('dragging'); });
+  scrollEl.addEventListener('mousemove',   e  => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - scrollEl.offsetLeft;
+    scrollEl.scrollLeft = scrollLeft - (x - startX) * 1.4;
+  });
+}
+
+// ---- LocationMap: expand + 3D tilt ----
+const mapCard = document.getElementById('map-card');
+if (mapCard) {
+  let expanded = false;
+
+  // Click to expand/collapse
+  mapCard.addEventListener('click', () => {
+    expanded = !expanded;
+    mapCard.classList.toggle('expanded', expanded);
+    mapCard.querySelector('.map-click-hint').textContent =
+      expanded ? 'Klik om te sluiten' : 'Klik om uit te vouwen';
+  });
+
+  // Keyboard accessible
+  mapCard.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      mapCard.click();
+    }
+  });
+
+  // 3D tilt on mouse move (same as framer-motion useTransform in the original)
+  mapCard.addEventListener('mousemove', e => {
+    const rect = mapCard.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);   // -1 to 1
+    const dy = (e.clientY - cy) / (rect.height / 2);  // -1 to 1
+    mapCard.style.transform = `rotateY(${dx * 6}deg) rotateX(${-dy * 6}deg)`;
+  });
+
+  mapCard.addEventListener('mouseleave', () => {
+    mapCard.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  });
+}
+
+// ---- Photo Gallery: spread + drag ----
+(function () {
+  const photos = Array.from(document.querySelectorAll('.gallery-photo'));
+  if (!photos.length) return;
+
+  // Assign random rotation to each photo based on its direction
+  photos.forEach(photo => {
+    const dir   = parseInt(photo.dataset.rotDir, 10); // -1 or 1
+    const rot   = (Math.random() * 3 + 1).toFixed(2); // 1–4 deg
+    const txPx  = photo.dataset.tx + 'px';
+    const tyPx  = photo.dataset.ty + 'px';
+    const rotDeg      = (rot * dir) + 'deg';
+    const rotHoverDeg = ((parseFloat(rot) + 2) * dir) + 'deg';
+
+    photo.style.setProperty('--tx',         txPx);
+    photo.style.setProperty('--ty',         tyPx);
+    photo.style.setProperty('--rot',        rotDeg);
+    photo.style.setProperty('--rot-hover',  rotHoverDeg);
+  });
+
+  // Trigger spread after the container fades in
+  // Stagger is already handled by each photo's transition-delay inline style
+  const spreadTimer = setTimeout(() => {
+    photos.forEach(p => p.classList.add('spread'));
+  }, 600);
+
+  // ---- Drag (snap-back) ----
+  photos.forEach(photo => {
+    let isDragging = false;
+    let startX, startY, dragDX, dragDY;
+
+    function applyDragTransform() {
+      const tx  = photo.style.getPropertyValue('--tx')  || '0px';
+      const ty  = photo.style.getPropertyValue('--ty')  || '0px';
+      const rot = photo.style.getPropertyValue('--rot') || '0deg';
+      photo.style.transform =
+        `translateX(calc(${tx} + ${dragDX}px)) translateY(calc(${ty} + ${dragDY}px)) rotate(${rot}) scale(1.08)`;
+    }
+
+    function onPointerDown(e) {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      dragDX = 0;
+      dragDY = 0;
+      photo.classList.add('dragging');
+      photo.classList.remove('spread'); // detach CSS spread rule so we control transform manually
+      e.preventDefault();
+
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      dragDX = e.clientX - startX;
+      dragDY = e.clientY - startY;
+      applyDragTransform();
+    }
+
+    function onPointerUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      photo.classList.remove('dragging');
+
+      // Snap back: re-attach spread class which carries the CSS transition
+      photo.style.transform = ''; // clear inline transform
+      photo.classList.add('spread');
+
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+    }
+
+    photo.addEventListener('pointerdown', onPointerDown);
+  });
+})();
+</script>
+
+</body>
+</html>
